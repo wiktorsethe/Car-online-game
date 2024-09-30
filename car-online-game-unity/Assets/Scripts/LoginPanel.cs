@@ -59,6 +59,7 @@ public class LoginPanel : MonoBehaviour
             
             var auth = FindObjectOfType<CustomAuthenticator>();
             auth.SetPlayerId(userData[0]);
+            auth.SetPlayername(userData[1]);
             //auth.SetPassword(userData[2]);
 
             myNetworkManagerScript.StartClient();

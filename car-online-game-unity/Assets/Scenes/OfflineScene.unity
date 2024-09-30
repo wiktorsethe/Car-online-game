@@ -1486,7 +1486,7 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
-  StartScene: Characters
+  StartScene: Cars
 --- !u!114 &1920399698
 MonoBehaviour:
   m_ObjectHideFlags: 0
