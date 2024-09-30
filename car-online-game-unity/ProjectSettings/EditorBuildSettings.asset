@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/PersistentScene.unity
     guid: d43363179d3d1400ba1aa93d7dbb1c80
   - enabled: 1
-    path: Assets/Scenes/Characters.unity
+    path: Assets/Scenes/Cars.unity
     guid: f58f8e1bc16814b5494d4bc9ec3f4bff
   - enabled: 1
     path: Assets/Scenes/Main.unity

@@ -10412,15 +10412,9 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  userSprite: {fileID: 8065438617128581785}
-  userIdSyncVar: 
-  userId: 
-  loginSyncVar: 
-  login: 
-  passwordSyncVar: 
-  password: 
-  nicknameSyncVar: 
-  nickname: 
+  spriteName: 
+  carSprite: {fileID: 8065438617128581785}
+  carsDatabase: {fileID: 11400000, guid: f942a4b7f4e5f48a9bdbbcf6aa9b6135, type: 2}
 --- !u!1 &7743464866435310824
 GameObject:
   m_ObjectHideFlags: 0

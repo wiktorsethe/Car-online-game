@@ -697,8 +697,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Cars: []
   carPrefab: {fileID: 4707995112782948164, guid: 70c9cf6ec739143d39a6dd3d60718042, type: 3}
-  listOfCarObjects: []
-  _sceneChanger: {fileID: 1416383346}
+  carsDatabase: {fileID: 11400000, guid: f942a4b7f4e5f48a9bdbbcf6aa9b6135, type: 2}
+  listOfCarObjectsInPanel: []
+  sceneChanger: {fileID: 1416383346}
 --- !u!1 &1416383344
 GameObject:
   m_ObjectHideFlags: 0
