@@ -8,135 +8,73 @@ using UnityEngine.SceneManagement;
 
 public class LoginPanel : MonoBehaviour
 {
-    private string serverUrl = "http://54.38.52.204/getlogin.php";
+    // Reference to the custom network manager
+    public AdditiveNetworkManager myNetworkManagerScript;
+    
+    // UI elements: login button, canvas, and input fields for login and password
     [SerializeField] private Button loginButton;
     [SerializeField] private GameObject canvas;
     [SerializeField] private InputField loginField;
     [SerializeField] private InputField passwordField;
-    //[SerializeField] private GameObject selectCharacterMenu;
-    
-    public AdditiveNetworkManager myNetworkManagerScript;
-    /*private FadeInOutScreen fadeInOutScreenScript;
-    [Scene] public string transitionToSceneName;
-    public string scenePosToSpawnOn;
 
-    public GameObject player;*/
-    
+    // URL of the server where login information is validated
+    private string serverUrl = "http://54.38.52.204/getlogin.php";
+
+    // Called when the object is initialized; ensures the network manager reference is set
     private void Awake()
     {
         if (myNetworkManagerScript == null)
         {
             myNetworkManagerScript = FindObjectOfType<AdditiveNetworkManager>();
-            //fadeInOutScreenScript = FindObjectOfType<FadeInOutScreen>();
         }
     }
 
+    // Called when the script starts; adds the login button click event listener
     public void Start()
     {
         Button btn = loginButton.GetComponent<Button>();
-        btn.onClick.AddListener(LoginOnClick);
+        btn.onClick.AddListener(LoginOnClick); // Links the button click to the login action
     }
 
+    // Function triggered on login button click
     private void LoginOnClick()
     {
+        // Initiates the login coroutine with the entered username and password
         StartCoroutine(LoginDB(loginField.text, passwordField.text));
     }
+
+    // Coroutine to handle login authentication with the server
     IEnumerator LoginDB(string username, string password)
     {
+        // Create a form to send username and password to the server
         WWWForm form = new WWWForm();
         form.AddField("username", username);
         form.AddField("password", password);
 
+        // Send the form to the server for validation
         WWW www = new WWW(serverUrl, form);
 
+        // Wait for the server's response
         yield return www;
 
+        // Parse the response from the server, expected to be in the format "id|username|status"
         string[] userData = www.text.Split('|');
         if (userData.Length == 3)
         {
-            
-
-            
+            // On successful login, set player ID and name in the authenticator
             var auth = FindObjectOfType<CustomAuthenticator>();
             auth.SetPlayerId(userData[0]);
             auth.SetPlayername(userData[1]);
-            //auth.SetPassword(userData[2]);
 
+            // Start the client network connection
             myNetworkManagerScript.StartClient();
-
-            /*var ni = NetworkClient.connection.identity;
-            //player = ni.gameObject;
-            ni.GetComponent<UserInfo>().CmdSetUserId(userData[0]);
-            ni.GetComponent<UserInfo>().CmdSetLogin(userData[1]);
-            ni.GetComponent<UserInfo>().CmdSetPassword(userData[2]);*/
-            
-            /*if (isServer)
-            {
-                StartCoroutine(SendPlayerToNewScene(player));
-            }
-            else
-            {
-                Debug.Log("Player has been logged in, waiting for server.");
-            }*/
         }
         else
         {
+            // On login failure, clear the input fields and log the server response
             loginField.text = "";
             passwordField.text = "";
-            Debug.Log(www.text);
+            Debug.Log(www.text); // Show error response
         }
     }
-    
-    /*
-    [ServerCallback]
-    IEnumerator SendPlayerToNewScene(GameObject player)
-    {
-        if (player.TryGetComponent(out NetworkIdentity identity))
-        {
-            NetworkConnectionToClient conn = identity.connectionToClient;
-            
-            
-            Debug.Log("Start moving the player to a new scene: " + transitionToSceneName);
-
-            conn.Send(new SceneMessage { sceneName = gameObject.scene.path, sceneOperation = SceneOperation.UnloadAdditive, customHandling = true });
-
-
-            yield return new WaitForSeconds((fadeInOutScreenScript.speed * 0.1f));
-
-            NetworkServer.RemovePlayerForConnection(conn, false);
-
-
-
-            NetworkStartPosition[] allStartPos = FindObjectsOfType<NetworkStartPosition>();
-
-            Transform start = myNetworkManagerScript.GetStartPosition();
-            foreach (var item in allStartPos)
-            {
-                if (item.gameObject.scene.name == Path.GetFileNameWithoutExtension(transitionToSceneName) && item.name == scenePosToSpawnOn)
-                {
-                    start = item.transform;
-                }
-            }
-
-            player.transform.position = start.position;
-
-
-            SceneManager.MoveGameObjectToScene(player, SceneManager.GetSceneByPath(transitionToSceneName));
-
-            Debug.Log("Player moved to new scene: " + transitionToSceneName);
-            
-            
-            conn.Send(new SceneMessage { sceneName = transitionToSceneName, sceneOperation = SceneOperation.LoadAdditive, customHandling = true });
-
-
-            NetworkServer.AddPlayerForConnection(conn, player);
-
-            Debug.Log("Player added back to server after scene change.");
-        }
-        else
-        {
-            Debug.LogError("NetworkIdentity component not found for player: " + player.name);
-        }
-    }*/
-
 }

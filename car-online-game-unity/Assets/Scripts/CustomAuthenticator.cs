@@ -11,6 +11,7 @@ public class CustomAuthenticator : NetworkAuthenticator
 {
     readonly HashSet<NetworkConnection> connectionsPendingDisconnect = new HashSet<NetworkConnection>();
     internal static readonly HashSet<string> playerNames = new HashSet<string>();
+    internal static readonly HashSet<string> playerIDs = new HashSet<string>();
 
     [Header("Client Username")] public string playerName;
     [Header("Client ID")] public string playerID;
@@ -22,6 +23,7 @@ public class CustomAuthenticator : NetworkAuthenticator
         // use whatever credentials make sense for your game
         // for example, you might want to pass the accessToken if using oauth
         public string authUsername;
+        public string authPlayerID;
     }
 
     public struct AuthResponseMessage : NetworkMessage
@@ -38,6 +40,7 @@ public class CustomAuthenticator : NetworkAuthenticator
     static void ResetStatics()
     {
         playerNames.Clear();
+        playerIDs.Clear();
     }
 
     /// <summary>
@@ -66,6 +69,7 @@ public class CustomAuthenticator : NetworkAuthenticator
     /// <param name="conn">Connection to client.</param>
     public override void OnServerAuthenticate(NetworkConnectionToClient conn)
     {
+        conn.authenticationData = playerID;
         // do nothing...wait for AuthRequestMessage from client
     }
 
@@ -81,15 +85,16 @@ public class CustomAuthenticator : NetworkAuthenticator
         if (connectionsPendingDisconnect.Contains(conn)) return;
 
         // check the credentials by calling your web server, database table, playfab api, or any method appropriate.
-        if (!playerNames.Contains(msg.authUsername))
+        if (!playerIDs.Contains(msg.authPlayerID) && !playerNames.Contains(msg.authUsername))
         {
             // Add the name to the HashSet
             playerNames.Add(msg.authUsername);
+            playerIDs.Add(msg.authPlayerID);
 
             // Store username in authenticationData
             // This will be read in Player.OnStartServer
             // to set the playerName SyncVar.
-            conn.authenticationData = msg.authUsername;
+            conn.authenticationData = msg.authPlayerID;
 
             // create and send msg to client so it knows to proceed
             AuthResponseMessage authResponseMessage = new AuthResponseMessage
@@ -174,7 +179,7 @@ public class CustomAuthenticator : NetworkAuthenticator
     /// </summary>
     public override void OnClientAuthenticate()
     {
-        NetworkClient.Send(new AuthRequestMessage { authUsername = playerName });
+        NetworkClient.Send(new AuthRequestMessage { authPlayerID = playerID, authUsername = playerName });
     }
 
     /// <summary>
