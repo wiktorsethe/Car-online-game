@@ -11,10 +11,10 @@ public class UserCarInfo : NetworkBehaviour
 
     // Reference to the SpriteRenderer that will display the car's sprite.
     [SerializeField] private SpriteRenderer carSprite;
-
+    
     // Reference to the car database which stores available cars sprites.
     [SerializeField] private CarsDatabase carsDatabase;
-
+    
     // Command is called on the server to update the spriteID on the network.
     // This method changes the sprite ID on the server, and SyncVar will update all clients.
     [Command]

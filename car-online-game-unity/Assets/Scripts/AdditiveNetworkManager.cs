@@ -4,6 +4,9 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Mirror;
+using Mirror.SimpleWeb;
+using UnityEngine.Networking;
+using UnityEngine.Serialization;
 
 public class AdditiveNetworkManager : NetworkManager
 {
@@ -16,6 +19,8 @@ public class AdditiveNetworkManager : NetworkManager
     private bool isInTransition;
     private bool firstSceneLoaded;
 
+    private string serverUrlLogout = "http://54.38.52.204/getlogout.php";
+    private string playerID;
     private void Start()
     {
         int sceneCount = SceneManager.sceneCountInBuildSettings - 2; //Subtract the offline and persistent scene
@@ -26,7 +31,7 @@ public class AdditiveNetworkManager : NetworkManager
             scenesToLoad[i] = Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(i + 2));
         }
     }
-
+    
     public override void OnServerSceneChanged(string sceneName)
     {
         base.OnServerSceneChanged(sceneName);
@@ -148,5 +153,20 @@ public class AdditiveNetworkManager : NetworkManager
         SceneManager.MoveGameObjectToScene(player, SceneManager.GetSceneByName(StartScene));
 
         NetworkServer.AddPlayerForConnection(conn, player);
+    }
+    
+    public override void OnServerDisconnect(NetworkConnectionToClient conn)
+    {
+        base.OnServerDisconnect(conn);
+        playerID = (string)conn.authenticationData;
+        StartCoroutine(SendLogoutRequest());
+    }
+    private IEnumerator SendLogoutRequest()
+    {
+        WWWForm form = new WWWForm();
+
+        form.AddField("userId", playerID);
+        new WWW(serverUrlLogout, form);
+        return null;
     }
 }
