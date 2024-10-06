@@ -1,10 +1,6 @@
 using System.Collections;
-using System.IO;
-using Mirror;
-using Mirror.Authenticators;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class LoginPanel : MonoBehaviour
 {

@@ -1,12 +1,8 @@
-using System;
 using System.Collections;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Mirror;
-using Mirror.SimpleWeb;
-using UnityEngine.Networking;
-using UnityEngine.Serialization;
 
 public class AdditiveNetworkManager : NetworkManager
 {
@@ -23,6 +19,12 @@ public class AdditiveNetworkManager : NetworkManager
     private string playerID;
     private void Start()
     {
+        if (SystemInfo.graphicsDeviceType == UnityEngine.Rendering.GraphicsDeviceType.Null) 
+        {
+            // Automatyczny start serwera w trybie headless
+            StartServer();
+        }
+        
         int sceneCount = SceneManager.sceneCountInBuildSettings - 2; //Subtract the offline and persistent scene
         scenesToLoad = new string[sceneCount];
 
