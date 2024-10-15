@@ -1226,7 +1226,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b927228410e6d4e8e8704395121b96c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  followSpeed: 5
 --- !u!114 &1293457243
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1574,7 +1573,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1920399687}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6442dc8070ceb41f094e44de0bf87274, type: 3}
   m_Name: 
@@ -1603,7 +1602,7 @@ MonoBehaviour:
   offlineScene: Assets/Scenes/OfflineScene.unity
   onlineScene: Assets/Scenes/PersistentScene.unity
   transport: {fileID: 1920399699}
-  networkAddress: 54.38.52.204
+  networkAddress: localhost
   maxConnections: 100
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60

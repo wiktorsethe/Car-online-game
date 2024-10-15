@@ -1,5 +1,6 @@
 using System.Collections;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Mirror;
@@ -161,6 +162,19 @@ public class AdditiveNetworkManager : NetworkManager
     {
         base.OnServerDisconnect(conn);
         playerID = (string)conn.authenticationData;
+        
+        if (!string.IsNullOrEmpty(playerID) && CustomAuthenticator.playerIDs.Contains(playerID))
+        {
+            // Znajdź odpowiadającą nazwę gracza i usuń z HashSetów
+            CustomAuthenticator.playerIDs.Remove(playerID);
+
+            string playerName = CustomAuthenticator.playerNames.FirstOrDefault(name => conn.authenticationData.Equals(playerID));
+            if (!string.IsNullOrEmpty(playerName))
+            {
+                CustomAuthenticator.playerNames.Remove(playerName);
+            }
+        }
+        
         StartCoroutine(SendLogoutRequest());
     }
     private IEnumerator SendLogoutRequest()
