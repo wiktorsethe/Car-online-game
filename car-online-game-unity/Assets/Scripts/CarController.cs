@@ -208,7 +208,7 @@ public class CarController : NetworkBehaviour
         }
 
         // Update the emission rate on the server
-        CmdUpdateParticleEmissionRate(particleEmissionRate);
+        CmdUpdateParticleEmissionRate(particleEmissionRate); // TU COS JEST NIE TAK
     }
 
     [Command]

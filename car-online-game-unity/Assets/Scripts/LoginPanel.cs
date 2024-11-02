@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Net.NetworkInformation;
+using Mirror;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -55,7 +57,7 @@ public class LoginPanel : MonoBehaviour
 
         // Parse the response from the server, expected to be in the format "id|username|status"
         string[] userData = www.text.Split('|');
-        if (userData.Length == 3)
+        if (userData.Length == 2)
         {
             // On successful login, set player ID and name in the authenticator
             var auth = FindObjectOfType<CustomAuthenticator>();
@@ -63,7 +65,7 @@ public class LoginPanel : MonoBehaviour
             auth.SetPlayername(userData[1]);
 
             // Start the client network connection
-            myNetworkManagerScript.StartClient();
+            myNetworkManagerScript.StartClient(); // ZAMIEN NA START CLIENT !!!!!!!!!!!!
         }
         else
         {
@@ -73,4 +75,6 @@ public class LoginPanel : MonoBehaviour
             Debug.Log(www.text); // Show error response
         }
     }
+
+
 }

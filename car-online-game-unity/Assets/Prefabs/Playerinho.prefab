@@ -10226,7 +10226,7 @@ GameObject:
   - component: {fileID: 5200308925548353101}
   - component: {fileID: 98259767406948976}
   - component: {fileID: 4285334772139363919}
-  - component: {fileID: 1598193172308168015}
+  - component: {fileID: 4456367122001285968}
   m_Layer: 0
   m_Name: Playerinho
   m_TagString: Player
@@ -10416,7 +10416,7 @@ MonoBehaviour:
   spriteID: 
   carSprite: {fileID: 8065438617128581785}
   carsDatabase: {fileID: 11400000, guid: f942a4b7f4e5f48a9bdbbcf6aa9b6135, type: 2}
---- !u!114 &1598193172308168015
+--- !u!114 &4456367122001285968
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10425,9 +10425,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 7606564862635047719}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f5861d724220e4302a2628948fcc39ce, type: 3}
+  m_Script: {fileID: 11500000, guid: 21a32d7dbc4804bbcaf3babe3d10a351, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &7743464866435310824
 GameObject:
   m_ObjectHideFlags: 0
