@@ -1,5 +1,6 @@
 using System.Collections;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Mirror;
@@ -16,6 +17,7 @@ public class AdditiveNetworkManager : NetworkManager
     private bool firstSceneLoaded;
 
     private string serverUrlLogout = "http://54.38.52.204/getlogout.php";
+    private string serverUrlCreateSession = "http://54.38.52.204/session_manager.php";
     private string playerID;
     private void Start()
     {
@@ -32,6 +34,29 @@ public class AdditiveNetworkManager : NetworkManager
         {
             scenesToLoad[i] = Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(i + 2));
         }
+    }
+
+    public override void OnClientConnect()
+    {
+        if (NetworkClient.connection != null)
+        {
+            var auth = FindObjectOfType<CustomAuthenticator>();
+            playerID = auth.playerID;
+            if (!string.IsNullOrEmpty(playerID))
+            {
+                StartCoroutine(SessionDB(playerID));
+            }
+        }
+    }
+
+    IEnumerator SessionDB(string userid)
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("userId", userid);
+        WWW www = new WWW(serverUrlCreateSession, form);
+        yield return www;
+        
+        Debug.Log(www.text);
     }
     
     public override void OnServerSceneChanged(string sceneName)
@@ -161,6 +186,19 @@ public class AdditiveNetworkManager : NetworkManager
     {
         base.OnServerDisconnect(conn);
         playerID = (string)conn.authenticationData;
+        
+        if (!string.IsNullOrEmpty(playerID) && CustomAuthenticator.playerIDs.Contains(playerID))
+        {
+            // Znajdź odpowiadającą nazwę gracza i usuń z HashSetów
+            CustomAuthenticator.playerIDs.Remove(playerID);
+
+            string playerName = CustomAuthenticator.playerNames.FirstOrDefault(name => conn.authenticationData.Equals(playerID));
+            if (!string.IsNullOrEmpty(playerName))
+            {
+                CustomAuthenticator.playerNames.Remove(playerName);
+            }
+        }
+        
         StartCoroutine(SendLogoutRequest());
     }
     private IEnumerator SendLogoutRequest()
@@ -170,5 +208,30 @@ public class AdditiveNetworkManager : NetworkManager
         form.AddField("userId", playerID);
         new WWW(serverUrlLogout, form);
         return null;
+    }
+
+    public override void OnClientDisconnect()
+    {
+        base.OnClientDisconnect();
+        
+        if (NetworkClient.connection != null)
+        {
+            if (!string.IsNullOrEmpty(playerID))
+            {
+                // Usuwamy identyfikator gracza z listy na serwerze.
+                CustomAuthenticator.playerIDs.Remove(playerID);
+
+                var auth = FindObjectOfType<CustomAuthenticator>();
+
+                string playerName = auth.playerName;
+                if (!string.IsNullOrEmpty(playerName))
+                {
+                    CustomAuthenticator.playerNames.Remove(playerName);
+                }
+            }
+
+            // Wywołujemy zapytanie o wylogowanie, aby poinformować serwer.
+            StartCoroutine(SendLogoutRequest());
+        }
     }
 }
